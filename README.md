@@ -1,5 +1,5 @@
 # Quantum computing research
-## Mentor: Dr. Venkatarami Kumar
+## Mentor: Dr. Venkataramani Kumar
 ## Students: Juan D. Guadalupe and Daniel C. Colón
 
 This repo presents a means of keeping our progress archived in a place we can collaborate.
