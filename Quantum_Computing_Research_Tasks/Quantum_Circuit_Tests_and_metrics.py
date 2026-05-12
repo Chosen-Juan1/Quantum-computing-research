@@ -23,8 +23,9 @@ def runQCTests_and_metrics(qc, title = "Simulated data vs real data"):
     for bitstring, count in counts.items():
         carry = bitstring[0]
         sum_bits = bitstring[1:]
+        sum = int(bitstring, 2)
 
-        label = f"carry={carry}, sum={sum_bits}"
+        label = f"carry={carry}, sum bits={sum_bits}, sum result={sum}"
         pretty_sim_counts[label] = count
 
         #comment if its in dist. mode
@@ -69,8 +70,8 @@ def runQCTests_and_metrics(qc, title = "Simulated data vs real data"):
     for bitstring, count in Real_counts.items():
         carry = bitstring[0]
         sum_bits = bitstring[1:]
-
-        label = f"carry={carry}, sum={sum_bits}"
+        sum = int(bitstring, 2)
+        label = f"carry={carry}, sum bits={sum_bits}, sum result={sum}"
         pretty_real_counts[label] = count
 
         #comment if its in dist. mode
