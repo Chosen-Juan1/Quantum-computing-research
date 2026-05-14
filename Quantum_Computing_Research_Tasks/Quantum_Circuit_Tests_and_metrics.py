@@ -1,4 +1,4 @@
-def runQCTests_and_metrics(qc, title = "Simulated data vs real data"):
+def runQCTests_and_metrics(qc, mode, title = "Simulated data vs real data",):
     from IPython.display import display
     from qiskit.visualization import plot_histogram
     from qiskit import transpile
@@ -9,7 +9,7 @@ def runQCTests_and_metrics(qc, title = "Simulated data vs real data"):
 
 
 
-    print("Quantum circuit (QC) being evaluated:  ")
+    print("Quantum circuit being evaluated:  ")
     display(qc.draw("mpl"))
 
 
@@ -23,10 +23,16 @@ def runQCTests_and_metrics(qc, title = "Simulated data vs real data"):
     for bitstring, count in counts.items():
         carry = bitstring[0]
         sum_bits = bitstring[1:]
-        sum = int(bitstring, 2)
+        if(mode == "add"):
+            sum = int(bitstring, 2)
 
-        label = f"carry={carry}, sum bits={sum_bits}, sum result={sum}"
-        pretty_sim_counts[label] = count
+            label = f"carry={carry}, sum bits={sum_bits}, sum result={sum}"
+            pretty_sim_counts[label] = count
+        else:
+            sub = int(bitstring[1:], 2)
+
+            label = f"carry={carry}, sub bits={sum_bits}, sub result={sub}"
+            pretty_sim_counts[label] = count
 
         #comment if its in dist. mode
         # print(bitstring, "→",
@@ -70,9 +76,16 @@ def runQCTests_and_metrics(qc, title = "Simulated data vs real data"):
     for bitstring, count in Real_counts.items():
         carry = bitstring[0]
         sum_bits = bitstring[1:]
-        sum = int(bitstring, 2)
-        label = f"carry={carry}, sum bits={sum_bits}, sum result={sum}"
-        pretty_real_counts[label] = count
+        if(mode == "add"):
+            sum = int(bitstring, 2)
+
+            label = f"carry={carry}, sum bits={sum_bits}, sum result={sum}"
+            pretty_real_counts[label] = count
+        else:
+            sub = int(bitstring[1:], 2)
+
+            label = f"carry={carry}, sub bits={sum_bits}, sub result={sub}"
+            pretty_real_counts[label] = count
 
         #comment if its in dist. mode
         # print(bitstring, "→",
@@ -81,9 +94,9 @@ def runQCTests_and_metrics(qc, title = "Simulated data vs real data"):
         #     "Result =", int(bitstring, 2))
         
 
-    SimData = plot_histogram(pretty_sim_counts, title="Simulated qc")
+    SimData = plot_histogram(pretty_sim_counts, title="Simulated quantum cirucit'")
 
-    RealData = plot_histogram(pretty_real_counts, title="Experimental qc", color= "red")
+    RealData = plot_histogram(pretty_real_counts, title="Experimental quantum cirucit'", color= "red")
 
     bothDatas = plot_histogram([pretty_sim_counts, pretty_real_counts], legend=["Simulated data", "Real data"], title = title, color=["blue", "red"])
 
@@ -91,10 +104,10 @@ def runQCTests_and_metrics(qc, title = "Simulated data vs real data"):
     print("\n")
 
 
-    print("\nSimualted quantum ciruit depth vs transpiled quantum circuit's depth")
+    print("\nSimualted Quantum Cirucit depth vs transpiled quantum circuit's depth")
 
-    print(f"og circuit's depth: {qc.depth()}")
-    print(f"transpiled circuit's depth: {qc_transpiled.depth()}\n")
+    print(f"og quantum cirucit's depth: {qc.depth()}")
+    print(f"transpiled 4-bit quantum cirucit''s depth: {qc_transpiled.depth()}\n")
     print("Meassuring quantum circuit's T-depth")
     decomposed = transpile(qc, basis_gates=['cx', 'h', 't', 'tdg', 's', 'sdg'])
 
