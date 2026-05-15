@@ -28,11 +28,16 @@ def runQCTests_and_metrics(qc, mode, title = "Simulated data vs real data",):
 
             label = f"carry={carry}, sum bits={sum_bits}, sum result={sum}"
             pretty_sim_counts[label] = count
-        else:
+        elif(mode == "sub"):
             sub = int(bitstring[1:], 2)
 
             label = f"carry={carry}, sub bits={sum_bits}, sub result={sub}"
             pretty_sim_counts[label] = count
+        else:
+            prod_bits = bitstring
+            label = f"product bits={prod_bits}, Product={int(bitstring,2)}"
+            pretty_sim_counts[label] = count
+
 
         #comment if its in dist. mode
         # print(bitstring, "→",
@@ -81,10 +86,14 @@ def runQCTests_and_metrics(qc, mode, title = "Simulated data vs real data",):
 
             label = f"carry={carry}, sum bits={sum_bits}, sum result={sum}"
             pretty_real_counts[label] = count
-        else:
+        elif(mode == "sub"):
             sub = int(bitstring[1:], 2)
 
             label = f"carry={carry}, sub bits={sum_bits}, sub result={sub}"
+            pretty_real_counts[label] = count
+        else:
+            prod_bits = bitstring
+            label = f"product bits={prod_bits}, Product={int(bitstring,2)}"
             pretty_real_counts[label] = count
 
         #comment if its in dist. mode
@@ -96,7 +105,7 @@ def runQCTests_and_metrics(qc, mode, title = "Simulated data vs real data",):
 
     SimData = plot_histogram(pretty_sim_counts, title="Simulated quantum cirucit'")
 
-    RealData = plot_histogram(pretty_real_counts, title="Experimental quantum cirucit'", color= "red")
+    RealData = plot_histogram(pretty_real_counts, title="Experimental quantum cirucit", color= "red")
 
     bothDatas = plot_histogram([pretty_sim_counts, pretty_real_counts], legend=["Simulated data", "Real data"], title = title, color=["blue", "red"])
 
