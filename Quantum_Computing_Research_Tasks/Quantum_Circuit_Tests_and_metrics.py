@@ -68,6 +68,7 @@ def runQCTests_and_metrics(qc, mode, title = "Simulated data vs real data",):
     print(f"job_id: {job.job_id()}")
     #check if there is a func that tells you if the job is done
 
+    # not needed, job.result() will wait until the job is done
     while(job.status() != "DONE"):
         continue
     print(f"Job metrics: {job.metrics()}\n")
