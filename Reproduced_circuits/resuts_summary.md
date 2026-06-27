@@ -61,6 +61,7 @@ Circuit specific metrics:
 		- Amount of qubits used, including inputs and ancillas, as given by `.width()`
 
 ## Addition
+### Without input carry
 - \# Accurate circuits: 232 / 256 (91%)
 - Test run
 	- Input: 0001 + 0001 = 0010
@@ -78,6 +79,9 @@ Circuit specific metrics:
 	- Toffoli count: 12
 	- CZ-count: 195
 	- Width: 17
+
+### With input carry
+- \# Accurate circuits: 112 / 256 (44%)
 
 ## Subtraction
 - \# Accurate circuits: 128 / 136 (94%) **MIGHT BE A BUG IN TESTER**
