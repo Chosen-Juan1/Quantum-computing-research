@@ -1,16 +1,16 @@
+from typing import Callable
+from dotenv import load_dotenv
+import os
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, transpile
 from qiskit.quantum_info import Statevector
 from qiskit.primitives import StatevectorSampler
 from qiskit.visualization import plot_histogram
 from qiskit_ibm_runtime import SamplerV2
 from qiskit_ibm_runtime import QiskitRuntimeService
-from qiskit.circuit.library import HalfAdderGate, CCXGate
+from qiskit.circuit.library import CCXGate
 import networkx as nx
-from dotenv import load_dotenv
-import os
-load_dotenv()
-os.getenv("IBM_QUANTUM_API_KEY")
 
+load_dotenv()
 QiskitRuntimeService.save_account(
     token=os.getenv("IBM_QUANTUM_API_KEY"),
     overwrite=True,
@@ -44,6 +44,24 @@ def get_answer(circuit, a_val, a_reg, b_val, b_reg, all_regs, qubits, answer_ran
     print(f"Final state:   {bitstr}")
     return tuple(int(bitstr[a_range[0]:a_range[1]], 2) for a_range in answer_ranges)
 
+def test_circuit(qc: QuantumCircuit, a_values: list[int], a_register: QuantumRegister, b_values: list[int], b_register: QuantumRegister, all_registers: list[QuantumRegister], expected_answer: Callable[[int, int], int], answer_range: tuple[int, int]):
+    count_wrong = 0
+    count_total = 0
+    wrongs = []
+    for a_value in a_values:
+        for b_value in b_values:
+            count_total += 1
+            answer = get_answer(qc, a_value, a_register, b_value, b_register, all_registers, qc.qubits, [answer_range])[0]
+            expected = expected_answer(a_value, b_value)
+            if answer != expected:
+                count_wrong += 1
+                wrongs.append((a_value, b_value, answer, expected))
+                print(f"Error: {a_value}, {b_value}: got {answer}, expected {expected}")
+    print("Total wrongs:", count_wrong)
+    print("Total tests:", count_total)
+    for a_value, b_value, answer, expected in wrongs:
+        print(f"  {a_value}, {b_value}: got {answer}, expected {expected}")
+
 def debug_circuit(qc):
     state = Statevector.from_instruction(qc)
     for instr in qc.data:
@@ -72,7 +90,6 @@ is_cz_gate = lambda inst: inst.name == "cz"
 
 def multi_qubit_interaction_graph(circuit):
     import networkx as nx
-    from qiskit import QuantumCircuit
 
     G = nx.Graph()
 
