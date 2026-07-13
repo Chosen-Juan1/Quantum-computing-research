@@ -140,3 +140,4 @@ def inspect_results(job, expected):
     print("Number of shots:", num_shots)
     print(f"Expected result {expected}: {counts[expected]}")
     print(f"Probability: {counts[expected] / num_shots:.4f}")
+    display(plot_histogram(counts, title=f"Top {num_top_results} results"))
