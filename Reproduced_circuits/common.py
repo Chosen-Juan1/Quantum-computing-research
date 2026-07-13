@@ -64,7 +64,7 @@ def test_circuit(qc: QuantumCircuit, a_values: list[int], a_register: QuantumReg
         print(f"  {a_value}, {b_value}: got {answer}, expected {expected}")
 
 def debug_circuit(qc):
-    state = Statevector.from_instruction(qc)
+    state = Statevector([1] + [0] * (2 ** qc.num_qubits - 1))
     for instr in qc.data:
         # Stop before the measurement instruction
         if instr.name == 'measure':
@@ -78,7 +78,7 @@ def debug_circuit(qc):
         print(f"Probabilities: {state.probabilities_dict()}\n")
 
     # --- 4. The 'state' variable now holds the intermediate state ---
-    print("\nFinal Intermediate Statevector:")
+    print("\nFinal Statevector:")
     print(state)
     print("Probabilities:")
     for basis_state, amplitude in state.probabilities_dict().items():
