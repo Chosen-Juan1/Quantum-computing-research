@@ -1,6 +1,7 @@
 from typing import Callable
 from dotenv import load_dotenv
 import os
+from IPython.display import display
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, transpile
 from qiskit.quantum_info import Statevector
 from qiskit.primitives import StatevectorSampler
@@ -126,3 +127,16 @@ def print_metrics(qc: QuantumCircuit):
     print("T depth:", clifford_t_qc.depth(is_t_gate))
     print("Width:", qc.width())
     print("Algebraic connectivity:", nx.algebraic_connectivity(graph))
+
+def inspect_results(job, expected):
+    result = job.result()[0]
+    counts = result.data.meas.get_counts()
+    num_top_results = 10
+    print(f"Top {num_top_results} results:")
+    top = dict(sorted(counts.items(), key=lambda item: item[1], reverse=True)[:num_top_results])
+    print(top)
+    num_shots = sum(counts.values())
+    print("Number of keys:", len(counts))
+    print("Number of shots:", num_shots)
+    print(f"Expected result {expected}: {counts[expected]}")
+    print(f"Probability: {counts[expected] / num_shots:.4f}")
