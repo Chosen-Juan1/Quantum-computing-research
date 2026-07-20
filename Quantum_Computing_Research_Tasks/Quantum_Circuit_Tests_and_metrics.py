@@ -7,6 +7,7 @@ def runQCTests_and_metrics(qc, mode, title = "Simulated data vs real data", reta
     from qiskit.primitives import StatevectorSampler
     from qiskit_ibm_runtime import Sampler
 
+    import matplotlib.pyplot as plt
     import sys
     sys.path.insert(1, '../Reproduced_circuits')
     from common import print_metrics
@@ -28,21 +29,21 @@ def runQCTests_and_metrics(qc, mode, title = "Simulated data vs real data", reta
     pretty_sim_counts = {}
 
     for bitstring, count in counts.items():
-        carry = bitstring[0]
-        sum_bits = bitstring[1:]
+        # carry = bitstring[0]
+        # sum_bits = bitstring[1:]
         if(mode == "add"):
             sum = int(bitstring, 2)
 
-            label = f"carry={carry}, sum bits={sum_bits}, sum result={sum}"
+            label = sum
             pretty_sim_counts[label] = count
         elif(mode == "sub"):
             sub = int(bitstring[1:], 2)
 
-            label = f"carry={carry}, sub bits={sum_bits}, sub result={sub}"
+            label = sub
             pretty_sim_counts[label] = count
         else:
-            prod_bits = bitstring
-            label = f"product bits={prod_bits}, Product={int(bitstring,2)}"
+            # prod_bits = bitstring
+            label = int(bitstring,2)
             pretty_sim_counts[label] = count
 
 
@@ -53,7 +54,8 @@ def runQCTests_and_metrics(qc, mode, title = "Simulated data vs real data", reta
         #     "Result =", int(bitstring, 2))
     
     #Hardware
-    backUp = f"Latest_{title}_job_id.txt" #prepping this in the case that i want to rerun a circuit without having to make a new job
+    backUp = f"Job_IDs/Latest_{title}_job_id.txt" #prepping this in the case that i want to rerun a circuit without having to make a new job
+
 
 
     service = QiskitRuntimeService()
@@ -107,21 +109,24 @@ def runQCTests_and_metrics(qc, mode, title = "Simulated data vs real data", reta
     pretty_real_counts = {}
 
     for bitstring, count in Real_counts.items():
-        carry = bitstring[0]
-        sum_bits = bitstring[1:]
+        # carry = bitstring[0]
+        # sum_bits = bitstring[1:]
         if(mode == "add"):
             sum = int(bitstring, 2)
 
-            label = f"carry={carry}, sum bits={sum_bits}, sum result={sum}"
+            # label = f"carry={carry}, sum bits={sum_bits}, sum result={sum}"
+            label = sum
+
             pretty_real_counts[label] = count
         elif(mode == "sub"):
             sub = int(bitstring[1:], 2)
 
-            label = f"carry={carry}, sub bits={sum_bits}, sub result={sub}"
+            # label = f"carry={carry}, sub bits={sum_bits}, sub result={sub}"
+            label = sub
             pretty_real_counts[label] = count
         else:
-            prod_bits = bitstring
-            label = f"product bits={prod_bits}, Product={int(bitstring,2)}"
+            # prod_bits = bitstring
+            label = int(bitstring,2)
             pretty_real_counts[label] = count
 
         #comment if its in dist. mode
@@ -131,13 +136,36 @@ def runQCTests_and_metrics(qc, mode, title = "Simulated data vs real data", reta
         #     "Result =", int(bitstring, 2))
         
 
-    SimData = plot_histogram(pretty_sim_counts, title="Simulated quantum cirucit'")
+    if(mode == "add"):
+        xAxis = "Sum results"
+    elif(mode == "sub"):
+        xAxis = "Sub results"
+    elif(mode == "mult"):
+        xAxis = "Multipliaction products"
+    yAxis = "Number of shots"
+    SimData = plot_histogram(pretty_sim_counts, title="Simulated quantum cirucit")
+    
+    SimData.axes[0].set_xlabel(xAxis)
+    SimData.axes[0].set_ylabel(yAxis)
 
     RealData = plot_histogram(pretty_real_counts, title="Experimental quantum cirucit", color= "red")
+    RealData.axes[0].set_xlabel(xAxis)
+    RealData.axes[0].set_ylabel(yAxis)
 
-    bothDatas = plot_histogram([pretty_sim_counts, pretty_real_counts], legend=["Simulated data", "Real data"], title = title, color=["blue", "red"],bar_labels=False)
-
+    bothDatas = plot_histogram([pretty_sim_counts, pretty_real_counts], legend=["Simulated data", "Experimental data"], title = title, color=["blue", "red"],bar_labels=False)
+    bothDatas.axes[0].set_xlabel(xAxis)
+    bothDatas.axes[0].set_ylabel(yAxis)
     display(SimData, RealData, bothDatas)
+
+    SimData.savefig(f"JobResults/Simulated_{title}.png",dpi=300)
+    RealData.savefig(f"JobResults/Experimental_{title}.png",dpi=300)
+    bothDatas.savefig(f"JobResults/Simulated_vs_Experimental_{title}.png",dpi=300)
+    plt.close(SimData)
+    plt.close(RealData)
+    plt.close(bothDatas)
+
+
+        
     print("\n")
 
 

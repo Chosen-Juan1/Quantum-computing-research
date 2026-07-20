@@ -15,7 +15,7 @@ load_dotenv()
 QiskitRuntimeService.save_account(
     token=os.getenv("IBM_QUANTUM_API_KEY"),
     overwrite=True,
-    instance="crn:v1:bluemix:public:quantum-computing:us-east:a/84cc656cc21646d2a0c535460b576f20:ae6b1949-8eb9-4aaf-9212-f71fef3141d3::"
+    instance=os.getenv("instance")
 )
 
 from qiskit.transpiler import generate_preset_pass_manager
